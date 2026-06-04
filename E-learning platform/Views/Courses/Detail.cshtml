@@ -1,0 +1,115 @@
+@model E_learning_platform.ViewModels.CourseCardViewModel
+@{
+    ViewData["Title"] = Model.Title;
+    var modules = ViewBag.CourseModules as List<string> ?? new List<string>();
+    var totalModules = (int)(ViewBag.TotalModules ?? 0);
+}
+
+<div class="page-hero-sm">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Courses" asp-action="Index" class="nav-link-custom ms-0">Courses</a></li>
+                <li class="breadcrumb-item text-secondary active">@Model.Category</li>
+                <li class="breadcrumb-item text-white active" aria-current="page">@Model.Title</li>
+            </ol>
+        </nav>
+        <div class="row align-items-start">
+            <div class="col-lg-8">
+                <span class="badge bg-@Model.CategoryColor bg-opacity-20 text-@Model.CategoryColor border border-@Model.CategoryColor border-opacity-25 mb-3">@Model.Category</span>
+                <h1 class="mb-3">@Model.Title</h1>
+                <p class="fs-5 text-secondary mb-4">@Model.Description</p>
+                <div class="d-flex flex-wrap gap-4 text-secondary small mb-4">
+                    <span><i class="bi bi-star-fill text-warning me-1"></i>@Model.Rating/5.0 (@Model.ReviewCount.ToString("N0") reviews)</span>
+                    <span><i class="bi bi-collection-play me-1"></i>@Model.LessonCount lessons</span>
+                    <span><i class="bi bi-clock me-1"></i>@Model.DurationHours hours total</span>
+                    <span><i class="bi bi-bar-chart me-1"></i>@Model.Level</span>
+                    <span><i class="bi bi-person me-1"></i>@Model.InstructorName</span>
+                </div>
+                <div class="d-flex gap-2">
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <span class="badge bg-dark border border-secondary text-secondary">@tag</span>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block">
+                <div class="glass-card text-center" style="background: radial-gradient(circle at center, @Model.ImageGradient, transparent);">
+                    <div class="display-4 mb-3">📚</div>
+                    <h3 class="text-white">$@Model.Price</h3>
+                    <a href="#enroll" class="btn-premium w-100 mt-2">Enroll Now</a>
+                    <p class="text-secondary small mt-3">30-Day Money-Back Guarantee</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container section-padding pt-4">
+    <div class="row g-5">
+        <div class="col-lg-8">
+
+            <!-- Course Modules via Iterator Pattern -->
+            <div class="glass-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0 fs-4">Course Curriculum</h2>
+                    <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25">
+                        <i class="bi bi-cpu me-1"></i>Iterator Pattern
+                    </span>
+                </div>
+                <p class="text-secondary small mb-4">Modules below are traversed using the <strong class="text-white">Iterator Pattern</strong> — the UI iterates through <code>CourseModuleCollection</code> without exposing its internal list structure.</p>
+
+                <div class="module-list">
+                    @for (int i = 0; i < modules.Count; i++)
+                    {
+                        <div class="module-item d-flex align-items-center gap-3 py-3 @(i < modules.Count - 1 ? "border-bottom border-secondary border-opacity-25" : "")">
+                            <div class="module-num bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width:36px;height:36px;min-width:36px;font-weight:700;font-size:.85rem;">@(i + 1)</div>
+                            <span class="text-white">@modules[i]</span>
+                            <span class="ms-auto badge bg-dark text-secondary small border border-secondary border-opacity-25">~45 min</span>
+                        </div>
+                    }
+                    @if (totalModules > modules.Count)
+                    {
+                        <div class="text-center pt-3">
+                            <span class="text-secondary small">+ @(totalModules - modules.Count) more modules after enrollment</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Instructor Card -->
+            <div class="glass-card">
+                <h2 class="fs-4 mb-4">Your Instructor</h2>
+                <div class="d-flex align-items-center gap-4">
+                    <div class="instructor-avatar bg-primary bg-opacity-20 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width:70px;height:70px;min-width:70px;font-size:1.5rem;font-weight:700;">
+                        @Model.InstructorName.Split(' ').Select(x => x[0]).Aggregate("",(a,b)=>a+b)
+                    </div>
+                    <div>
+                        <h5 class="text-white mb-1">@Model.InstructorName</h5>
+                        <p class="text-secondary small mb-1"><i class="bi bi-star-fill text-warning me-1"></i>4.9 Instructor Rating</p>
+                        <p class="text-secondary small mb-0"><i class="bi bi-people me-1"></i>3,200+ Students</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Sticky Enroll Card -->
+            <div id="enroll" class="glass-card sticky-top" style="top: 100px;">
+                <div class="text-center mb-4" style="background: radial-gradient(circle at center, @Model.ImageGradient, transparent); border-radius:16px; padding: 2rem;">
+                    <div class="display-4">🎓</div>
+                </div>
+                <h3 class="text-white mb-1">$@Model.Price</h3>
+                <p class="text-secondary small mb-4">Full lifetime access</p>
+                <a asp-controller="Dashboard" asp-action="Index" class="btn-premium w-100 mb-3">Enroll Now</a>
+                <ul class="list-unstyled text-secondary small">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>@Model.LessonCount on-demand lessons</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>@Model.DurationHours hours of video content</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Certificate of completion</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Downloadable resources</li>
+                    <li><i class="bi bi-check-circle text-success me-2"></i>30-day money-back guarantee</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

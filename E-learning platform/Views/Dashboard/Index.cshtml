@@ -1,0 +1,146 @@
+@model E_learning_platform.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Student Dashboard";
+    var draftMessage = TempData["DraftMessage"] as string;
+}
+
+<div class="container" style="padding-top: 100px; padding-bottom: 4rem;">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
+        <div>
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 mb-2">STUDENT PORTAL</span>
+            <h1 class="mb-1">Welcome back, <span class="text-gradient">@Model.StudentName</span> 👋</h1>
+            <p class="text-secondary mb-0">@Model.StudentEmail</p>
+        </div>
+        <a asp-controller="Courses" asp-action="Index" class="btn-premium">Browse Courses</a>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-6 col-lg-3">
+            <div class="glass-card text-center">
+                <div class="display-5 fw-bold text-gradient">@Model.TotalEnrolled</div>
+                <p class="text-secondary small mb-0">Enrolled Courses</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card text-center">
+                <div class="display-5 fw-bold text-gradient">@Model.InProgress</div>
+                <p class="text-secondary small mb-0">In Progress</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card text-center">
+                <div class="display-5 fw-bold text-gradient">@Model.Completed</div>
+                <p class="text-secondary small mb-0">Completed</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card text-center">
+                <div class="display-5 fw-bold text-gradient">@Model.TotalHoursLearned</div>
+                <p class="text-secondary small mb-0">Hours Learned</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- My Courses -->
+        <div class="col-lg-8">
+            <div class="glass-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fs-5 mb-0">My Courses</h2>
+                    <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25">
+                        <i class="bi bi-eye me-1"></i>Observer Pattern
+                    </span>
+                </div>
+                @foreach (var c in Model.EnrolledCourses)
+                {
+                    <div class="d-flex align-items-center gap-3 py-3 border-bottom border-secondary border-opacity-25 course-progress-row">
+                        <div class="course-thumb bg-@c.CategoryColor bg-opacity-10 text-@c.CategoryColor rounded-3 d-flex align-items-center justify-content-center" style="width:48px;height:48px;min-width:48px;font-size:1.2rem;"><i class="bi bi-book"></i></div>
+                        <div class="flex-grow-1 min-width-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a asp-controller="Courses" asp-action="Detail" asp-route-id="@c.CourseId" class="text-white fw-semibold text-decoration-none hover-gradient">@c.Title</a>
+                                <span class="text-secondary small ms-2 text-nowrap">@c.LastAccessed</span>
+                            </div>
+                            <p class="text-secondary small mb-2">@c.InstructorName · Grade: <span class="text-white fw-semibold">@c.Grade</span></p>
+                            <div class="progress-track" style="height:6px; background: var(--surface); border-radius:3px;">
+                                <div class="progress-fill @(c.ProgressPercent == 100 ? "progress-complete" : "")" style="height:100%; width:@c.ProgressPercent%; border-radius:3px; background: @(c.ProgressPercent == 100 ? "linear-gradient(90deg,#00d2ff,#0062ff)" : "linear-gradient(90deg,var(--primary),var(--secondary))"); transition: width 1s ease;"></div>
+                            </div>
+                            <span class="text-secondary" style="font-size:.75rem;">@c.ProgressPercent% complete</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Assignment Draft Editor (Memento) -->
+            <div class="glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fs-5 mb-0">Assignment Draft Editor</h2>
+                    <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-25">
+                        <i class="bi bi-clock-history me-1"></i>Memento Pattern
+                    </span>
+                </div>
+                <p class="text-secondary small mb-3">Save and Undo your drafts using the <strong class="text-white">Memento Pattern</strong>. Each "Save Draft" creates a snapshot; "Undo" restores the previous one.</p>
+
+                @if (!string.IsNullOrEmpty(draftMessage))
+                {
+                    <div class="alert-glass mb-3">✅ @draftMessage</div>
+                }
+
+                <form method="post" asp-action="SaveDraft" asp-controller="Dashboard">
+                    <textarea name="content" class="form-control form-control-dark mb-3" rows="5" placeholder="Write your assignment here...">@Model.CurrentAssignmentDraft</textarea>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-premium py-2 px-4">💾 Save Draft</button>
+                        <form method="post" asp-action="UndoDraft" asp-controller="Dashboard" class="d-inline">
+                            <button type="submit" class="btn btn-outline-secondary rounded-pill py-2 px-4">↩️ Undo</button>
+                        </form>
+                    </div>
+                </form>
+
+                @if (Model.DraftHistory.Any())
+                {
+                    <div class="mt-4">
+                        <p class="text-secondary small mb-2">📜 Draft History:</p>
+                        @foreach (var prev in Model.DraftHistory)
+                        {
+                            <div class="text-secondary small glass-card p-2 mb-2" style="opacity:.7; font-size:.8rem;">@prev.Substring(0, Math.Min(80, prev.Length))...</div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Notifications (Observer) -->
+            <div class="glass-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fs-6 mb-0">🔔 Notifications</h2>
+                    <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25 small">Observer</span>
+                </div>
+                @if (!Model.Notifications.Any())
+                {
+                    <p class="text-secondary small mb-0">No new notifications.</p>
+                }
+                else
+                {
+                    @foreach (var n in Model.Notifications)
+                    {
+                        <div class="notification-item py-2 border-bottom border-secondary border-opacity-25">
+                            <p class="text-secondary small mb-0">@n</p>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- Patterns Playground Link -->
+            <div class="glass-card text-center">
+                <div class="display-4 mb-3">⚙️</div>
+                <h5 class="text-white mb-2">Patterns Live Demo</h5>
+                <p class="text-secondary small mb-3">Interact with Strategy, Command and other patterns.</p>
+                <a asp-controller="Patterns" asp-action="Index" class="btn-premium w-100">Open Demo</a>
+            </div>
+        </div>
+    </div>
+</div>

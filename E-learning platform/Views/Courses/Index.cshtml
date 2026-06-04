@@ -1,0 +1,103 @@
+@model E_learning_platform.ViewModels.CoursesPageViewModel
+@{
+    ViewData["Title"] = "Courses Catalog";
+}
+
+<div class="page-hero-sm">
+    <div class="container">
+        <h1 class="mb-2">Browse <span class="text-gradient">All Courses</span></h1>
+        <p class="text-secondary fs-5">@Model.TotalCount course(s) found. Start learning today.</p>
+    </div>
+</div>
+
+<div class="container section-padding pt-4">
+
+    <!-- Search + Filter Row -->
+    <div class="glass-card mb-5">
+        <form method="get" asp-action="Index" class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="text-secondary small mb-1">Search</label>
+                <input name="search" type="text" class="form-control form-control-dark" placeholder="Search courses..." value="@Model.SearchQuery" />
+            </div>
+            <div class="col-md-4">
+                <label class="text-secondary small mb-1">Category</label>
+                <select name="category" class="form-select form-select-dark">
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <option value="@cat" selected="@(cat == Model.SelectedCategory)">@cat</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn-premium w-100 py-2">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Category Pills -->
+    <div class="d-flex gap-2 flex-wrap mb-5">
+        @foreach (var cat in Model.Categories)
+        {
+            var isActive = cat == Model.SelectedCategory;
+            <a asp-action="Index" asp-route-category="@cat" asp-route-search="@Model.SearchQuery"
+               class="filter-pill @(isActive ? "filter-pill-active" : "")">@cat</a>
+        }
+    </div>
+
+    <!-- Course Grid -->
+    @if (!Model.Courses.Any())
+    {
+        <div class="text-center py-5">
+            <div class="glass-card d-inline-block px-5 py-4">
+                <i class="bi bi-search fs-1 text-secondary mb-3 d-block"></i>
+                <h4>No courses found</h4>
+                <p class="text-secondary">Try a different search term or category.</p>
+                <a asp-action="Index" class="btn-premium mt-2">Clear Filters</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var course in Model.Courses)
+            {
+                <div class="col-xl-4 col-md-6">
+                    <div class="course-card glass-card p-0 h-100">
+                        <div class="course-card-top position-relative" style="background: radial-gradient(circle at 30% 50%, @course.ImageGradient, transparent); height: 180px;">
+                            <span class="badge bg-@course.CategoryColor bg-opacity-20 text-@course.CategoryColor border border-@course.CategoryColor border-opacity-25 position-absolute top-0 start-0 m-3">@course.Category</span>
+                            @if (!string.IsNullOrEmpty(course.BadgeLabel))
+                            {
+                                <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3 fw-bold">@course.BadgeLabel</span>
+                            }
+                            <div class="position-absolute bottom-0 start-0 w-100 p-3 d-flex align-items-center gap-2">
+                                @foreach (var tag in course.Tags.Take(3))
+                                {
+                                    <span class="badge bg-dark bg-opacity-75 text-secondary small">@tag</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-secondary small"><i class="bi bi-person me-1"></i>@course.InstructorName</span>
+                                <span class="text-secondary small"><i class="bi bi-star-fill text-warning me-1"></i>@course.Rating (@course.ReviewCount.ToString("N0"))</span>
+                            </div>
+                            <h5 class="mb-2 text-white">@course.Title</h5>
+                            <p class="text-secondary small mb-3">@course.Description</p>
+
+                            <div class="d-flex gap-3 text-secondary small mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+                                <span><i class="bi bi-collection-play me-1"></i>@course.LessonCount lessons</span>
+                                <span><i class="bi bi-clock me-1"></i>@course.DurationHours hrs</span>
+                                <span><i class="bi bi-bar-chart me-1"></i>@course.Level</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">$@course.Price</h4>
+                                <a asp-action="Detail" asp-route-id="@course.Id" class="btn-premium py-2 px-3 small fw-bold">View Course</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

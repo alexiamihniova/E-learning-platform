@@ -1,8 +1,315 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Revolutionizing Online Education";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- ── HERO ──────────────────────────────── -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <!-- Left: text -->
+            <div class="col-lg-6">
+                <div class="hero-badge">
+                    <span class="dot"></span>
+                    NEXT GENERATION LEARNING
+                </div>
+
+                <h1 class="hero-title">
+                    Elevate Your<br>
+                    <span class="text-gradient">Knowledge</span><br>
+                    with Pro Experts.
+                </h1>
+
+                <p class="text-secondary mb-5" style="font-size:1.15rem;line-height:1.8;max-width:480px;">
+                    Access world-class education from anywhere. Master in-demand skills in programming, design and business with our interactive platform.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mb-5">
+                    <a asp-controller="Courses" asp-action="Index" class="btn-premium">
+                        <i class="bi bi-rocket-takeoff me-2"></i>Explore Courses
+                    </a>
+                    <a asp-controller="Patterns" asp-action="Index" class="btn-outline-glass">
+                        <i class="bi bi-play-circle me-2"></i>Live Patterns Demo
+                    </a>
+                </div>
+
+                <!-- Social proof -->
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex" style="margin-right:.5rem;">
+                        @for (int i = 0; i < 4; i++) {
+                            var colors = new[] { "#0062ff","#6c5ce7","#00d2ff","#f5a623" };
+                            <div style="width:36px;height:36px;border-radius:50%;background:@colors[i];border:2px solid var(--bg-dark);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:white;margin-left:@(i==0?"0":"-10px");"></div>
+                        }
+                    </div>
+                    <div>
+                        <div class="star-rating">★★★★★</div>
+                        <p class="text-secondary mb-0" style="font-size:.85rem;">
+                            <span class="text-white fw-semibold">1,200+</span> students joined this week
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: visual -->
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="hero-visual" style="padding:1rem;">
+                    <div class="hero-orb" style="min-height:420px;">
+                        <!-- Central icon -->
+                        <div style="position:relative;z-index:1;text-align:center;">
+                            <div style="font-size:5rem;filter:drop-shadow(0 0 40px rgba(0,98,255,.8));animation:float 6s ease-in-out infinite;">🎓</div>
+                            <p class="text-gradient fw-bold mt-3" style="font-size:1.1rem;">Learn. Build. Succeed.</p>
+                        </div>
+
+                        <!-- Floating pills -->
+                        <div class="hero-stat-pill" style="top:15%;left:-5%;background:rgba(0,201,125,.15);border-color:rgba(0,201,125,.4);color:#00c97d;">
+                            <i class="bi bi-check-circle me-1"></i> 150+ Courses
+                        </div>
+                        <div class="hero-stat-pill" style="bottom:20%;right:-5%;background:rgba(108,92,231,.15);border-color:rgba(108,92,231,.4);color:#a29bfe;">
+                            <i class="bi bi-people me-1"></i> 10k+ Students
+                        </div>
+                        <div class="hero-stat-pill" style="top:50%;left:-8%;transform:translateY(-50%);background:rgba(245,166,35,.15);border-color:rgba(245,166,35,.4);color:#f5a623;">
+                            <i class="bi bi-star-fill me-1"></i> 4.9 Rating
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── STATS ──────────────────────────────── -->
+<section class="pb-5">
+    <div class="container">
+        <div class="glass-card-flat">
+            <div class="row g-0 text-center">
+                @{
+                    var stats = new[] {
+                        new { Value="150", Suffix="+", Label="Online Courses", Icon="bi-collection-play", Decimals="0" },
+                        new { Value="10000", Suffix="+", Label="Active Students", Icon="bi-people", Decimals="0" },
+                        new { Value="98", Suffix="%", Label="Satisfaction Rate", Icon="bi-heart", Decimals="0" },
+                        new { Value="50", Suffix="+", Label="Expert Mentors", Icon="bi-person-badge", Decimals="0" },
+                    };
+                }
+                @for (int i = 0; i < stats.Length; i++) {
+                    var s = stats[i];
+                    <div class="col-6 col-md-3 py-4 reveal reveal-delay-@(i+1)
+                                @(i>0 ? "border-start border-secondary border-opacity-25" : "")">
+                        <i class="bi @s.Icon text-primary mb-2 d-block" style="font-size:1.5rem;"></i>
+                        <span class="stat-number"
+                              data-counter data-target="@s.Value" data-suffix="@s.Suffix" data-decimals="@s.Decimals">
+                            @s.Value@s.Suffix
+                        </span>
+                        <span class="stat-label">@s.Label</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── CATEGORIES ────────────────────────── -->
+<section class="section-padding">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <div class="section-label">CATEGORIES</div>
+                <h2 class="heading-gradient mb-1" style="font-size:2.5rem;">
+                    Top <span class="text-gradient">Categories</span>
+                </h2>
+                <p class="text-secondary mb-0">Choose from a wide range of subjects.</p>
+            </div>
+            <a asp-controller="Courses" asp-action="Index" class="nav-link-custom d-none d-md-flex align-items-center gap-1">
+                View All <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            @{
+                var cats = new[] {
+                    new { Icon="bi-code-slash", Label="Programming", Sub="C#, Python, JavaScript", Color="#0062ff", Bg="rgba(0,98,255,0.12)", Count="48 courses" },
+                    new { Icon="bi-palette2", Label="Design", Sub="UI/UX, Figma, 3D Art", Color="#6c5ce7", Bg="rgba(108,92,231,0.12)", Count="32 courses" },
+                    new { Icon="bi-graph-up-arrow", Label="Business", Sub="Marketing, Finance", Color="#f5a623", Bg="rgba(245,166,35,0.12)", Count="27 courses" },
+                    new { Icon="bi-camera-video", Label="Photography", Sub="Lighting, Editing", Color="#00d2ff", Bg="rgba(0,210,255,0.12)", Count="21 courses" },
+                };
+            }
+            @for (int i = 0; i < cats.Length; i++) {
+                var c = cats[i];
+                <div class="col-md-6 col-lg-3 reveal reveal-delay-@(i+1)">
+                    <a asp-controller="Courses" asp-action="Index" asp-route-category="@c.Label"
+                       class="glass-card category-card d-block text-decoration-none h-100 text-center">
+                        <div class="category-icon-wrap" style="background:@c.Bg;color:@c.Color;">
+                            <i class="bi @c.Icon"></i>
+                        </div>
+                        <h4 class="heading-gradient mb-1" style="font-size:1.1rem;">@c.Label</h4>
+                        <p class="text-secondary small mb-2">@c.Sub</p>
+                        <span style="font-size:.78rem;color:@c.Color;font-weight:600;">@c.Count</span>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ── FEATURED COURSES ───────────────────── -->
+<section class="section-padding" style="background:rgba(255,255,255,0.015);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-label mx-auto" style="width:fit-content;">FEATURED</div>
+            <h2 class="heading-gradient" style="font-size:2.5rem;">
+                Our Best <span class="text-gradient">Courses</span>
+            </h2>
+            <p class="text-secondary">Handpicked by our team of expert instructors.</p>
+        </div>
+
+        <div class="row g-4">
+            @{
+                var featured = new[] {
+                    new { Title="Advanced C# Design Patterns", Cat="PROGRAMMING", Price="89.99", Rating="4.9", Reviews="2.1k", Lessons=42, Hours=28, Level="Advanced", Instructor="Dr. Alex Popescu", Badge="BESTSELLER", Gradient="rgba(0,98,255,0.4)", BgColor="#0062ff22" },
+                    new { Title="Premium UI/UX Masterclass", Cat="DESIGN", Price="74.99", Rating="4.8", Reviews="1.5k", Lessons=35, Hours=22, Level="Intermediate", Instructor="Maria Constantin", Badge="", Gradient="rgba(108,92,231,0.4)", BgColor="#6c5ce722" },
+                    new { Title="Social Media Growth 2026", Cat="MARKETING", Price="49.99", Rating="4.7", Reviews="980", Lessons=28, Hours=18, Level="Beginner", Instructor="Ion Marinescu", Badge="NEW", Gradient="rgba(0,210,255,0.4)", BgColor="#00d2ff22" },
+                };
+            }
+            @for (int i = 0; i < featured.Length; i++) {
+                var f = featured[i];
+                <div class="col-lg-4 col-md-6 reveal reveal-delay-@(i+1)">
+                    <div class="glass-card p-0 h-100" style="overflow:hidden;">
+                        <!-- Thumb -->
+                        <div style="height:190px;background:radial-gradient(circle at 40% 50%, @f.Gradient, @f.BgColor);position:relative;display:flex;align-items:center;justify-content:center;">
+                            <div style="font-size:3.5rem;filter:drop-shadow(0 4px 20px rgba(0,0,0,.5));">📚</div>
+                            @if (!string.IsNullOrEmpty(f.Badge)) {
+                                <span class="badge position-absolute top-0 end-0 m-3"
+                                      style="background:@(f.Badge=="NEW"?"rgba(0,201,125,.9)":"rgba(245,166,35,.9)");color:@(f.Badge=="NEW"?"white":"#111");font-weight:700;padding:.4rem .8rem;">
+                                    @f.Badge
+                                </span>
+                            }
+                            <span class="badge position-absolute top-0 start-0 m-3"
+                                  style="background:rgba(5,10,21,.7);border:1px solid rgba(255,255,255,.15);color:white;font-size:.7rem;">
+                                @f.Cat
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-secondary small"><i class="bi bi-person me-1"></i>@f.Instructor</span>
+                                <span class="text-secondary small"><i class="bi bi-star-fill text-warning me-1"></i>@f.Rating (@f.Reviews)</span>
+                            </div>
+                            <h5 class="text-white mb-2" style="font-size:1rem;">@f.Title</h5>
+                            <div class="d-flex gap-3 text-secondary" style="font-size:.8rem;margin-bottom:1rem;">
+                                <span><i class="bi bi-collection-play me-1"></i>@f.Lessons lessons</span>
+                                <span><i class="bi bi-clock me-1"></i>@f.Hours hrs</span>
+                                <span><i class="bi bi-bar-chart me-1"></i>@f.Level</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-3"
+                                 style="border-top:1px solid var(--border);">
+                                <span class="text-gradient fw-bold" style="font-size:1.3rem;">$@f.Price</span>
+                                <a asp-controller="Courses" asp-action="Index" class="btn-premium py-2 px-3"
+                                   style="font-size:.85rem;">Enroll Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-5">
+            <a asp-controller="Courses" asp-action="Index" class="btn-outline-glass">
+                View All Courses <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ── HOW IT WORKS ───────────────────────── -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-label mx-auto" style="width:fit-content;">PROCESS</div>
+            <h2 class="heading-gradient" style="font-size:2.5rem;">
+                How It <span class="text-gradient">Works</span>
+            </h2>
+            <p class="text-secondary">Start learning in 3 simple steps.</p>
+        </div>
+        <div class="row g-4">
+            @{
+                var steps = new[] {
+                    new { Num="01", Icon="bi-search", Title="Browse Courses", Desc="Explore 150+ expert-curated courses across programming, design, and business.", Delay="1" },
+                    new { Num="02", Icon="bi-cursor-fill", Title="Enroll Instantly", Desc="One-click enrollment. Start learning immediately with lifetime access.", Delay="2" },
+                    new { Num="03", Icon="bi-trophy-fill", Title="Earn Your Certificate", Desc="Complete courses, pass assessments, and earn verified certificates.", Delay="3" },
+                };
+            }
+            @foreach (var s in steps) {
+                <div class="col-md-4 reveal reveal-delay-@s.Delay">
+                    <div class="glass-card step-card h-100">
+                        <div class="step-number">
+                            <i class="bi @s.Icon"></i>
+                        </div>
+                        <span style="font-size:.75rem;color:var(--text-secondary);letter-spacing:.1em;font-weight:600;">STEP @s.Num</span>
+                        <h4 class="text-white mt-2 mb-2">@s.Title</h4>
+                        <p class="text-secondary mb-0" style="font-size:.93rem;">@s.Desc</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ── TESTIMONIALS ───────────────────────── -->
+<section class="section-padding" style="background:rgba(255,255,255,0.015);border-top:1px solid var(--border);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-label mx-auto" style="width:fit-content;">TESTIMONIALS</div>
+            <h2 class="heading-gradient" style="font-size:2.5rem;">
+                What Students <span class="text-gradient">Say</span>
+            </h2>
+        </div>
+        <div class="row g-4">
+            @{
+                var testimonials = new[] {
+                    new { Name="Andrei Ionescu", Role="Software Developer", Text="The Design Patterns course completely changed how I write code. The explanations are crystal clear and the live demos are brilliant.", Avatar="AI", Color="#0062ff", Delay="1" },
+                    new { Name="Elena Dumitrescu", Role="UI/UX Designer", Text="I went from zero to landing my first freelance client in 2 months. The UI/UX Masterclass is worth every penny!", Avatar="ED", Color="#6c5ce7", Delay="2" },
+                    new { Name="Mihai Popa", Role="Marketing Manager", Text="The Social Media Growth course gave me actionable strategies I could implement right away. Our brand grew 300% in 3 months.", Avatar="MP", Color="#f5a623", Delay="3" },
+                };
+            }
+            @foreach (var t in testimonials) {
+                <div class="col-md-4 reveal reveal-delay-@t.Delay">
+                    <div class="glass-card testimonial-card h-100">
+                        <div class="star-rating mb-3">★★★★★</div>
+                        <p class="text-secondary mb-4" style="font-size:.93rem;line-height:1.75;">@t.Text</p>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-circle"
+                                 style="background:rgba(@(t.Color.Replace("#","")),.2);color:@t.Color;background-color:@(t.Color)22;">
+                                @t.Avatar
+                            </div>
+                            <div>
+                                <div class="text-white fw-semibold" style="font-size:.9rem;">@t.Name</div>
+                                <div class="text-secondary" style="font-size:.8rem;">@t.Role</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ── CTA BANNER ─────────────────────────── -->
+<section class="section-padding">
+    <div class="container">
+        <div class="glass-card text-center reveal" style="background:linear-gradient(135deg,rgba(0,98,255,.12) 0%,rgba(108,92,231,.12) 100%);border-color:rgba(0,98,255,.25);padding:4rem 2rem;">
+            <div style="font-size:3rem;margin-bottom:1.5rem;">🚀</div>
+            <h2 class="heading-gradient mb-3" style="font-size:2.5rem;">
+                Ready to Start Your Journey?
+            </h2>
+            <p class="text-secondary mb-4" style="font-size:1.1rem;max-width:500px;margin:0 auto 2rem;">
+                Join 10,000+ students and unlock your full potential today.
+            </p>
+            <div class="d-flex flex-wrap gap-3 justify-content-center">
+                <a asp-controller="Courses" asp-action="Index" class="btn-premium" style="font-size:1rem;padding:1rem 2.5rem;">
+                    <i class="bi bi-rocket-takeoff me-2"></i>Start Learning Free
+                </a>
+                <a asp-controller="Dashboard" asp-action="Index" class="btn-outline-glass" style="font-size:1rem;padding:1rem 2.5rem;">
+                    View Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

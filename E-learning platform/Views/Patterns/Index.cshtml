@@ -1,0 +1,146 @@
+@{
+    ViewData["Title"] = "Design Patterns Live Demo";
+    var strategyResults = ViewBag.StrategyResults as dynamic;
+    var enrollLog = ViewBag.EnrollLog as List<string> ?? new List<string>();
+    bool canUndo = ViewBag.CanUndo ?? false;
+}
+
+<div class="page-hero-sm">
+    <div class="container">
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 mb-3">INTERACTIVE LAB</span>
+        <h1 class="mb-2">Behavioral Patterns <span class="text-gradient">Live Demo</span></h1>
+        <p class="text-secondary fs-5">Interact with the patterns implemented in this platform. All code runs server-side using the actual pattern classes.</p>
+    </div>
+</div>
+
+<div class="container section-padding pt-4">
+    <div class="row g-4">
+
+        <!-- Strategy Pattern -->
+        <div class="col-12">
+            <div class="glass-card">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <h2 class="fs-4 mb-1">1. Strategy Pattern</h2>
+                        <p class="text-secondary small mb-0">Same scores, different grading algorithm applied at runtime via <code>IGradingStrategy</code>.</p>
+                    </div>
+                    <span class="badge-pattern bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25 px-3 py-2 rounded-pill">IGradingStrategy</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark-custom">
+                        <thead>
+                            <tr>
+                                <th class="text-secondary">Score</th>
+                                <th class="text-secondary">StandardGradingStrategy</th>
+                                <th class="text-secondary">PassFailGradingStrategy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (strategyResults != null)
+                            {
+                                foreach (var r in strategyResults)
+                                {
+                                    <tr>
+                                        <td class="text-white fw-bold">@r.Score</td>
+                                        <td>
+                                            <span class="badge @(r.Standard == "F" ? "bg-danger" : (r.Standard == "A" ? "bg-success" : "bg-primary")) bg-opacity-20 border @(r.Standard == "F" ? "border-danger text-danger" : (r.Standard == "A" ? "border-success text-success" : "border-primary text-primary")) px-3">@r.Standard</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge @(r.PassFail == "Fail" ? "bg-danger" : "bg-success") bg-opacity-20 border @(r.PassFail == "Fail" ? "border-danger text-danger" : "border-success text-success") px-3">@r.PassFail</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Command Pattern -->
+        <div class="col-lg-6">
+            <div class="glass-card h-100">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <h2 class="fs-4 mb-1">2. Command Pattern</h2>
+                        <p class="text-secondary small mb-0">Enroll a student then Undo via the <code>CommandInvoker</code> stack.</p>
+                    </div>
+                    <span class="badge-pattern bg-warning bg-opacity-20 text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill">ICommand + Undo</span>
+                </div>
+
+                <form method="post" asp-action="Enroll" class="row g-3 mb-4">
+                    <div class="col-6">
+                        <input name="studentName" class="form-control form-control-dark" placeholder="Student name..." required />
+                    </div>
+                    <div class="col-6">
+                        <select name="courseName" class="form-select form-select-dark">
+                            <option>Advanced C# Design Patterns</option>
+                            <option>Premium UI/UX Masterclass</option>
+                            <option>ASP.NET Core 10 from Scratch</option>
+                            <option>Social Media Growth 2026</option>
+                        </select>
+                    </div>
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit" class="btn-premium py-2 px-4">✅ Enroll (Execute)</button>
+                        <form method="post" asp-action="UndoEnroll" class="d-inline">
+                            <button type="submit" class="btn btn-outline-secondary rounded-pill py-2 px-4" @(canUndo ? "" : "disabled")>↩️ Undo</button>
+                        </form>
+                    </div>
+                </form>
+
+                <div class="log-box" style="max-height: 220px; overflow-y: auto;">
+                    @if (!enrollLog.Any())
+                    {
+                        <p class="text-secondary small">No commands executed yet.</p>
+                    }
+                    else
+                    {
+                        @foreach (var entry in enrollLog.Reverse<string>())
+                        {
+                            <div class="log-entry py-2 border-bottom border-secondary border-opacity-25">
+                                <span class="text-secondary small">@entry</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Observer + Memento info cards -->
+        <div class="col-lg-6">
+            <div class="glass-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fs-4 mb-0">3. Observer Pattern</h2>
+                    <span class="badge-pattern bg-success bg-opacity-20 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill">Course Notifications</span>
+                </div>
+                <p class="text-secondary small">When a new material is added to a course, <code>CourseNotifier</code> automatically calls <code>Update()</code> on all attached <code>StudentObserver</code>s.</p>
+                <div class="pattern-flow d-flex align-items-center gap-2 flex-wrap mt-3">
+                    <span class="pattern-node bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill small">CourseNotifier</span>
+                    <i class="bi bi-arrow-right text-secondary"></i>
+                    <span class="pattern-node bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill small">AddNewMaterial()</span>
+                    <i class="bi bi-arrow-right text-secondary"></i>
+                    <span class="pattern-node bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill small">Notify()</span>
+                    <i class="bi bi-arrow-right text-secondary"></i>
+                    <span class="pattern-node bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill small">StudentObserver.Update()</span>
+                </div>
+                <div class="mt-3">
+                    <a asp-controller="Dashboard" asp-action="Index" class="btn-premium py-2 px-4 small">See in Dashboard →</a>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fs-4 mb-0">4. Memento + Iterator</h2>
+                    <span class="badge-pattern bg-info bg-opacity-20 text-info border border-info border-opacity-25 px-3 py-2 rounded-pill">Save / Traverse</span>
+                </div>
+                <p class="text-secondary small mb-3">The <strong class="text-white">Memento</strong> pattern powers the assignment draft editor—each save snapshot is stored in a <code>Stack&lt;AssignmentDraftMemento&gt;</code> so you can undo infinitely.</p>
+                <p class="text-secondary small mb-3">The <strong class="text-white">Iterator</strong> pattern powers the course module list—traversal logic is encapsulated in <code>CourseModuleIterator</code> without exposing the internal list.</p>
+                <div class="d-flex gap-2">
+                    <a asp-controller="Dashboard" asp-action="Index" class="btn-premium py-2 px-3 small">Memento Demo →</a>
+                    <a asp-controller="Courses" asp-action="Detail" asp-route-id="1" class="btn btn-outline-secondary rounded-pill py-2 px-3 small">Iterator Demo →</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
